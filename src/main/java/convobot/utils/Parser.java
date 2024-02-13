@@ -1,19 +1,29 @@
-package commands;
+package utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import commands.Add;
+import commands.Bye;
+import commands.Command;
+import commands.CommandType;
+import commands.Delete;
+import commands.Find;
+import commands.List;
+import commands.Mark;
+import commands.Unmark;
 import exceptions.ConvoBotException;
 import tasks.Deadline;
 import tasks.Event;
+import tasks.Task;
 import tasks.ToDo;
-import utils.DateTime;
 
 /**
- * The {@code CommandParser} class provides utility methods for parsing commands from user input.
+ * The {@code Parser} class provides utility methods for parsing user input and task-related information.
+ * It includes methods for parsing user commands and converting task-related data to and from strings.
  */
-public class CommandParser {
+public class Parser {
 
     /**
      * Parses user input and returns the corresponding {@code Command} object.
@@ -22,9 +32,9 @@ public class CommandParser {
      * @return the corresponding {@code Command} object
      * @throws ConvoBotException if the input is invalid or cannot be parsed
      */
-    public static Command parse(String userInput) throws ConvoBotException {
+    public static Command parseUserInput(String userInput) throws ConvoBotException {
         ArrayList<String> inputList = new ArrayList<>(Arrays.asList(userInput.split(" ")));
-        if (inputList.isEmpty()) {
+        if (inputList.size() == 0) {
             throw new ConvoBotException("Invalid input. Input must not be empty.");
         }
 
@@ -145,4 +155,38 @@ public class CommandParser {
         return command;
     }
 
+    /**
+     * Parses a line of text and returns the corresponding {@code Task} object.
+     *
+     * @param line the line of text representing a task
+     * @return the corresponding {@code Task} object
+     * @throws IllegalArgumentException if the line is in an invalid format
+     */
+    public static Task parseTaskFromLine(String line) throws IllegalArgumentException {
+        String[] parts = line.split(" \\| ");
+        if (parts.length < 3 || parts.length > 5) {
+            throw new IllegalArgumentException("Invalid line format: " + line);
+        }
+        boolean isDone = parts[1].equals("1");
+        String description = parts[2];
+        Task task;
+        try {
+            switch (parts[0]) {
+            case "T":
+                task = new ToDo(description, isDone);
+                break;
+            case "D":
+                task = new Deadline(description, isDone, DateTime.stringToDate(parts[3]));
+                break;
+            case "E":
+                task = new Event(description, isDone, DateTime.stringToDate(parts[3]), DateTime.stringToDate(parts[4]));
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid line format: " + line);
+            }
+        } catch (ConvoBotException e) {
+            throw new IllegalArgumentException("Invalid line format: " + line);
+        }
+        return task;
+    }
 }
