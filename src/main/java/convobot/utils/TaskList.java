@@ -6,11 +6,9 @@ import exceptions.ConvoBotException;
 import tasks.Task;
 
 /**
- * The {@code TaskList} class represents a collection of tasks and
- * provides methods for managing the task list.
- * It includes operations such as adding tasks, marking tasks as done
- * or not done, retrieving task details, deleting tasks, and obtaining
- * the size of the task list.
+ * The {@code TaskList} class represents a collection of tasks and provides methods for managing the task list.
+ * It includes operations such as adding tasks, marking tasks as done or not done, retrieving task details,
+ * deleting tasks, and obtaining the size of the task list.
  */
 public class TaskList {
 
@@ -25,8 +23,7 @@ public class TaskList {
     }
 
     /**
-     * Constructs a new {@code TaskList} instance and initializes it
-     * with tasks read from the specified storage.
+     * Constructs a new {@code TaskList} instance and initializes it with tasks read from the specified storage.
      *
      * @param db the storage instance used to read tasks
      */
@@ -46,28 +43,16 @@ public class TaskList {
     }
 
     /**
-     * Enforces the bounds of the task list by throwing an exception
-     * if the given index is out of bounds.
-     *
-     * @param i the index of the task in the task list
-     * @throws ConvoBotException if the index is out of bounds
-     */
-    private void enforceArrayBounds(int i) throws ConvoBotException {
-        if (i < 0 || i >= taskList.size()) {
-            throw new ConvoBotException("Invalid input. You must specify a valid index.");
-        }
-    }
-
-    /**
      * Marks a task in the task list as done or not done based on the specified index.
      *
      * @param i      the index of the task in the task list
-     * @param isDone {@code true} if the task should be marked as done,
-     *               {@code false} if marked as not done
+     * @param isDone {@code true} if the task should be marked as done, {@code false} if marked as not done
      * @throws ConvoBotException if the index is out of bounds
      */
     public void mark(int i, boolean isDone) throws ConvoBotException {
-        enforceArrayBounds(i);
+        if (i < 0 || i >= taskList.size()) {
+            throw new ConvoBotException("Invalid input. You must specify a valid index.");
+        }
         Task task = taskList.get(i);
         if (isDone) {
             task.markAsDone();
@@ -84,7 +69,9 @@ public class TaskList {
      * @throws ConvoBotException if the index is out of bounds
      */
     public String getTaskString(int i) throws ConvoBotException {
-        enforceArrayBounds(i);
+        if (i < 0 || i >= taskList.size()) {
+            throw new ConvoBotException("Invalid input. You must specify a valid index.");
+        }
         return taskList.get(i).toString();
     }
 
@@ -94,10 +81,14 @@ public class TaskList {
      * @param i The index of the task to retrieve. It should be a non-negative integer
      *          and less than the size of the task list.
      * @return The description of the task at the specified index.
-     * @throws ConvoBotException if the index is out of bounds
+     * @throws ConvoBotException If the index is less than 0 or greater than or equal to
+     *                           the size of the task list, an exception is thrown with
+     *                           the message "Invalid input. You must specify a valid index."
      */
     public String getTaskDescription(int i) throws ConvoBotException {
-        enforceArrayBounds(i);
+        if (i < 0 || i >= taskList.size()) {
+            throw new ConvoBotException("Invalid input. You must specify a valid index.");
+        }
         return taskList.get(i).getDescription();
     }
 
@@ -108,7 +99,9 @@ public class TaskList {
      * @throws ConvoBotException if the index is out of bounds
      */
     public void delete(int i) throws ConvoBotException {
-        enforceArrayBounds(i);
+        if (i < 0 || i >= taskList.size()) {
+            throw new ConvoBotException("Invalid input. You must specify a valid index.");
+        }
         taskList.remove(i);
         db.write(taskList);
     }
