@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import tasks.Task;
-import tasks.TaskParser;
 
 /**
  * The {@code Storage} class provides methods for reading and writing task data to a file.
@@ -39,7 +38,7 @@ public class Storage {
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
             String line;
             while ((line = reader.readLine()) != null) {
-                Task task = TaskParser.parse(line);
+                Task task = Parser.parseTaskFromLine(line);
                 taskList.add(task);
             }
             reader.close();
